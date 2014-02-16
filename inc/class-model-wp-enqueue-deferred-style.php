@@ -8,6 +8,7 @@ if(!class_exists('Model_WP_Enqueue_Deferred_Style')){
 
     private static function is_dependency($handle){
       global $wp_styles;
+
       foreach($wp_styles->registered as $style => $data){
         if(in_array($handle, $wp_styles->registered[$style]->deps)){
           return true;
@@ -18,6 +19,8 @@ if(!class_exists('Model_WP_Enqueue_Deferred_Style')){
 
     public function register_deferred_style($handle, $src = '', $deps = array(), $ver = false, $media = 'all'){
       global $wp_styles;
+      wp_register_style($handle, $src, $deps, $ver, $media);
+
       if(self::is_dependency($handle)){
         return false;
       }
@@ -42,7 +45,6 @@ if(!class_exists('Model_WP_Enqueue_Deferred_Style')){
             'ver' => $ver,
             'media' => $media
           );
-          wp_register_style($handle, $src, $deps, $ver, $media);
         }
       }
     }
@@ -57,8 +59,9 @@ if(!class_exists('Model_WP_Enqueue_Deferred_Style')){
 
     public function do_defer(){
       global $wp_styles;
+      $wp_styles->all_deps($wp_styles->queue);
 
-      foreach($wp_styles->queue as $style){
+      foreach($wp_styles->to_do as $style){
         if(array_key_exists($style, $this->registered)){
           $this->add_to_queue($style);
         }
