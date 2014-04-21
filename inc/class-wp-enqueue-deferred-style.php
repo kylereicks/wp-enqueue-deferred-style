@@ -47,9 +47,9 @@ if(!class_exists('WP_Enqueue_Deferred_Style')){
 
     public function add_update_hook(){
       if(get_option('wp_enqueue_deferred_style_version') !== WP_ENQUEUE_DEFERRED_STYLE_VERSION){
+        do_action('wp_enqueue_deferred_style_updated');
         update_option('wp_enqueue_deferred_style_update_timestamp', time());
         update_option('wp_enqueue_deferred_style_version', WP_ENQUEUE_DEFERRED_STYLE_VERSION);
-        do_action('wp_enqueue_deferred_style_updated');
       }
     }
 
